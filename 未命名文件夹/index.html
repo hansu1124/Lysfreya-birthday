@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Magic Birthday · Lysfreya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Great+Vibes&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+<style>
+:root{--bg-deep:#060f0c;--bg-mid:#0b1a15;--bg-soft:#132a22;--gold-soft:#d4af37;--gold-pale:#e8d9a8;--ink:#e6dcc4;--ink-dim:#a89c7e;--serif:'Cormorant Garamond','Times New Roman',serif;--display:'Cinzel','Times New Roman',serif;--script:'Great Vibes',cursive;--ink-font:'Zhi Mang Xing','Ma Shan Zheng',cursive}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%}
+body{background:radial-gradient(ellipse at 50% 45%,var(--bg-soft) 0%,var(--bg-mid) 50%,var(--bg-deep) 100%);font-family:var(--serif);color:var(--ink);min-height:100vh;overflow-x:hidden;position:relative;line-height:1.7;letter-spacing:.02em;-webkit-font-smoothing:antialiased}
+.starmap{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.75;mix-blend-mode:screen}
+.noise{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.8 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:noiseShift 1.2s steps(3) infinite}
+@keyframes noiseShift{0%{transform:translate(0,0)}33%{transform:translate(-2px,1px)}66%{transform:translate(1px,-2px)}100%{transform:translate(0,0)}}
+.mist{position:fixed;inset:-10%;z-index:1;pointer-events:none;background:radial-gradient(circle at 25% 30%,rgba(212,175,55,.10) 0%,transparent 35%),radial-gradient(circle at 75% 65%,rgba(120,180,220,.08) 0%,transparent 40%),radial-gradient(circle at 55% 85%,rgba(140,120,255,.06) 0%,transparent 35%);filter:blur(30px);animation:mistDrift 18s ease-in-out infinite alternate}
+@keyframes mistDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-2%,2%) scale(1.08)}}
+.particles{position:fixed;inset:0;z-index:2;pointer-events:none}
+.particle{position:absolute;width:2px;height:2px;background:var(--gold-pale);border-radius:50%;box-shadow:0 0 10px var(--gold-soft);opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(20vh) translateX(0);opacity:0}10%{opacity:.9}90%{opacity:.7}100%{transform:translateY(-110vh) translateX(30px);opacity:0}}
+.vignette{position:fixed;inset:0;z-index:4;pointer-events:none;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.65) 100%)}
+.darkness{position:fixed;inset:0;z-index:400;background:#000;opacity:0;pointer-events:none;transition:opacity 3s ease}
+.darkness.on{opacity:.92}
+.darkness.off{opacity:0}
+.stage{position:relative;z-index:10;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.compass-wrap{position:relative;width:340px;height:340px;display:flex;align-items:center;justify-content:center;margin-bottom:70px;transition:transform 1.8s cubic-bezier(.5,0,.5,1),opacity 1.8s ease}
+.compass-wrap::before{content:"";position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.18) 0%,transparent 60%);animation:breathe 6s ease-in-out infinite;pointer-events:none}
+@keyframes breathe{0%,100%{opacity:.4;transform:scale(.98)}50%{opacity:.9;transform:scale(1.06)}}
+.compass{position:relative;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#16241d 0%,#0a1712 72%,#060f0c 100%);border:1px solid rgba(201,162,39,.5);box-shadow:0 0 0 8px rgba(201,162,39,.05),0 0 0 18px rgba(201,162,39,.025),0 0 80px rgba(212,175,55,.20),inset 0 0 60px rgba(0,0,0,.85),inset 0 0 20px rgba(212,175,55,.08);animation:spinSlow 34s linear infinite;transition:animation-duration 1.5s ease}
+.compass::before{content:"";position:absolute;inset:26px;border-radius:50%;border:1px dashed rgba(201,162,39,.32)}
+.compass::after{content:"";position:absolute;inset:48px;border-radius:50%;border:1px solid rgba(201,162,39,.15)}
+.compass-rune{position:absolute;top:50%;left:50%;width:3px;height:3px;background:var(--gold-soft);border-radius:50%;box-shadow:0 0 8px var(--gold-soft);opacity:.75}
+.compass-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;background-image:url('compass-rose.png');background-size:contain;background-position:center;background-repeat:no-repeat;z-index:5;pointer-events:none;filter:drop-shadow(0 0 14px rgba(212,175,55,.75)) drop-shadow(0 0 30px rgba(212,175,55,.35));animation:corePulse 4s ease-in-out infinite}
+@keyframes corePulse{0%,100%{opacity:.82;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+.compass-needle{position:absolute;top:50%;left:50%;width:2px;height:100px;background:linear-gradient(to top,transparent 0%,var(--gold-soft) 35%,var(--gold-pale) 100%);transform-origin:bottom center;transform:translate(-50%,-100%) rotate(45deg);border-radius:2px;box-shadow:0 0 14px rgba(212,175,55,.9);z-index:4;opacity:.55}
+.compass-needle::before{content:"";position:absolute;top:-9px;left:50%;width:0;height:0;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:14px solid var(--gold-pale);filter:drop-shadow(0 0 8px var(--gold-soft))}
+@keyframes spinSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.compass-wrap.fade-out{transform:scale(1.6);opacity:0;filter:blur(20px)}
+.btn{background:transparent;border:1px solid rgba(201,162,39,.65);color:var(--gold-pale);font-family:var(--display);font-size:.95rem;padding:18px 52px;border-radius:2px;letter-spacing:.5em;text-transform:uppercase;cursor:pointer;transition:all 1s ease;position:relative;overflow:hidden;backdrop-filter:blur(6px);z-index:10}
+.btn::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(212,175,55,.18) 50%,transparent 70%);transform:translateX(-100%);transition:transform 1.2s ease}
+.btn:hover{border-color:var(--gold-pale);color:#fffbe8;box-shadow:0 0 40px rgba(212,175,55,.4),inset 0 0 22px rgba(212,175,55,.12);letter-spacing:.6em}
+.btn:hover::before{transform:translateX(100%)}
+.btn.fade-out{opacity:0;transform:translateY(12px);pointer-events:none;transition:all 1s ease}
+.btn-quiet{background:transparent;border:1px solid rgba(201,162,39,.4);color:var(--gold-pale);font-family:var(--display);font-size:.75rem;padding:12px 30px;letter-spacing:.35em;text-transform:uppercase;cursor:pointer;transition:all .6s ease;border-radius:1px}
+.btn-quiet:hover{border-color:var(--gold-pale);color:#fffbe8;box-shadow:0 0 24px rgba(212,175,55,.25)}
+.tarot-scene{display:none;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 1.6s ease;width:100%}
+.tarot-scene.active{display:flex;opacity:1}
+.tarot-title{font-family:var(--display);font-size:.75rem;letter-spacing:.5em;color:var(--ink-dim);text-transform:uppercase;margin-bottom:40px;text-align:center}
+.tarot-row{display:flex;gap:40px;flex-wrap:wrap;justify-content:center;perspective:1200px}
+.tarot-card{width:180px;height:300px;position:relative;cursor:pointer;transition:transform .8s cubic-bezier(.5,0,.5,1);transform-style:preserve-3d}
+.tarot-card:hover{transform:translateY(-10px)}
+.tarot-card-inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.5,0,.5,1)}
+.tarot-card.flipped .tarot-card-inner{transform:rotateY(180deg)}
+.tarot-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+.tarot-back{background-image:url('tarot-back.png');background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid rgba(201,162,39,.75);box-shadow:0 20px 40px rgba(0,0,0,.75),0 0 40px rgba(212,175,55,.28),0 0 80px rgba(212,175,55,.12),inset 0 0 30px rgba(0,0,0,.55)}
+.tarot-back::after{content:"";position:absolute;inset:12px;border:1px solid rgba(201,162,39,.5);border-radius:4px;pointer-events:none}
+.tarot-front{background:radial-gradient(circle at 50% 30%,#1a2e24 0%,#0b1a15 100%);border:1px solid rgba(201,162,39,.7);box-shadow:0 20px 40px rgba(0,0,0,.7),0 0 50px rgba(212,175,55,.3),inset 0 0 40px rgba(0,0,0,.6);transform:rotateY(180deg);justify-content:space-between;text-align:center;gap:12px}
+.tarot-label{font-family:var(--display);font-size:.65rem;letter-spacing:.4em;color:var(--gold-soft);text-transform:uppercase}
+.tarot-icon{font-size:3rem;color:var(--gold-pale);text-shadow:0 0 20px var(--gold-soft);line-height:1}
+.tarot-name{font-family:var(--display);font-size:.85rem;letter-spacing:.3em;color:var(--ink);text-transform:uppercase}
+.tarot-caption{font-family:var(--serif);font-size:.75rem;font-style:italic;color:var(--ink-dim);letter-spacing:.05em;line-height:1.5}
+.tarot-card.unlocked .tarot-front{box-shadow:0 20px 40px rgba(0,0,0,.7),0 0 60px rgba(212,175,55,.55);border-color:var(--gold-pale)}
+.puzzle-overlay{position:fixed;inset:0;z-index:500;background:rgba(4,10,8,.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .8s ease;overflow-y:auto}
+.puzzle-overlay.show{display:flex;opacity:1}
+.puzzle-box{max-width:580px;width:100%;padding:48px 40px;background:radial-gradient(circle at 50% 0%,#16241d 0%,#0a1712 100%);border:1px solid rgba(201,162,39,.55);border-radius:4px;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(212,175,55,.2);text-align:center;position:relative}
+.puzzle-box::before{content:"";position:absolute;inset:10px;border:1px solid rgba(201,162,39,.2);border-radius:2px;pointer-events:none}
+.puzzle-title{font-family:var(--display);font-size:.75rem;letter-spacing:.5em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:8px}
+.puzzle-subtitle{font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--ink-dim);margin-bottom:32px;letter-spacing:.05em}
+.scramble{font-family:var(--display);font-size:1.5rem;letter-spacing:.4em;color:var(--gold-soft);margin-bottom:24px;min-height:2.5rem;text-shadow:0 0 12px rgba(212,175,55,.4);transition:all .5s ease}
+.scramble.solved{color:var(--gold-pale);letter-spacing:.6em;text-shadow:0 0 24px var(--gold-soft)}
+.symbols-area{position:relative;width:100%;height:280px;margin-bottom:24px;border:1px dashed rgba(201,162,39,.25);border-radius:4px;overflow:hidden;background:radial-gradient(circle at 30% 40%,rgba(212,175,55,.05) 0%,transparent 50%),radial-gradient(circle at 70% 60%,rgba(120,180,220,.05) 0%,transparent 50%)}
+.hidden-symbol{position:absolute;cursor:pointer;transition:all .6s ease;user-select:none;display:flex;align-items:center;justify-content:center;opacity:.35;filter:drop-shadow(0 0 6px rgba(0,0,0,.6)) grayscale(40%)}
+.hidden-symbol img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+.hidden-symbol:hover{opacity:1;filter:drop-shadow(0 0 12px rgba(212,175,55,.85)) grayscale(0%)}
+.hidden-symbol.found{opacity:1;filter:drop-shadow(0 0 18px var(--gold-soft)) grayscale(0%);pointer-events:none;transform:scale(1.15) translate(-50%,-50%)!important}
+@keyframes foodFloat{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-8px)}}
+.hint-text{font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--ink-dim);letter-spacing:.05em;margin-bottom:20px;line-height:1.7}
+.morse-display{font-family:var(--display);font-size:1.15rem;letter-spacing:.3em;color:var(--gold-soft);margin-bottom:8px;text-shadow:0 0 12px rgba(212,175,55,.4);line-height:2.2;word-break:break-all}
+.morse-hint{font-family:var(--serif);font-style:italic;font-size:.85rem;color:var(--ink-dim);margin-bottom:24px}
+.puzzle-input{width:100%;padding:16px 20px;background:rgba(0,0,0,.3);border:1px solid rgba(201,162,39,.4);border-radius:2px;color:var(--gold-pale);font-family:var(--display);font-size:1.2rem;letter-spacing:.4em;text-align:center;text-transform:uppercase;outline:none;transition:all .4s ease;margin-bottom:20px}
+.puzzle-input:focus{border-color:var(--gold-pale);box-shadow:0 0 24px rgba(212,175,55,.3)}
+.puzzle-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.hero-anims{display:flex;gap:60px;justify-content:center;margin:30px 0;flex-wrap:wrap}
+.hero-anim{width:110px;height:110px;position:relative;cursor:pointer;transition:all .6s ease}
+.hero-anim:hover{transform:scale(1.08)}
+.hero-anim svg{width:100%;height:100%;fill:none;stroke:var(--gold-soft);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;transition:all .6s ease;filter:drop-shadow(0 0 8px rgba(212,175,55,.4))}
+.hero-anim.activated svg{stroke:var(--gold-pale);filter:drop-shadow(0 0 20px var(--gold-soft))}
+.hero-anim.activated{animation:heroPulse 1s ease-in-out infinite alternate}
+@keyframes heroPulse{0%{transform:scale(1)}100%{transform:scale(1.06)}}
+.flash{position:fixed;inset:0;z-index:900;background:radial-gradient(circle at center,rgba(255,245,210,.95) 0%,rgba(212,175,55,.4) 40%,transparent 70%);pointer-events:none;opacity:0;transition:opacity .4s ease}
+.flash.on{opacity:1}
+.success-mark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);z-index:700;font-family:var(--display);font-size:.9rem;letter-spacing:.5em;color:var(--gold-pale);text-transform:uppercase;text-shadow:0 0 30px var(--gold-soft);opacity:0;pointer-events:none;transition:all 1s ease;text-align:center}
+.success-mark.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.cake-scene{display:none;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 2s ease;width:100%;position:relative;z-index:420}
+.cake-scene.active{display:flex;opacity:1}
+.cake-wrap{position:relative;width:460px;height:420px;margin:10px 0 20px;display:flex;align-items:center;justify-content:center;transition:opacity 1.6s ease}
+.candle-glow{position:absolute;bottom:190px;left:50%;transform:translateX(-50%);width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(255,190,80,.32) 0%,rgba(255,180,60,.12) 25%,transparent 55%);pointer-events:none;z-index:-1;animation:candleAmbient 3s ease-in-out infinite;transition:opacity 1.5s ease}
+@keyframes candleAmbient{0%,100%{opacity:.75;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.candle-glow.off{opacity:0}
+.cake-plate{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:400px;height:14px;background:radial-gradient(ellipse at 50% 0,rgba(140,180,255,.35) 0%,rgba(201,162,39,.06) 60%,transparent 100%);border-radius:50%;filter:blur(1.5px)}
+.cake-plate::after{content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:380px;height:26px;border-radius:50%;background:radial-gradient(ellipse at 50% 50%,rgba(120,200,255,.32) 0%,rgba(200,120,255,.18) 40%,transparent 75%);filter:blur(14px);pointer-events:none;animation:plateAura 4s ease-in-out infinite}
+@keyframes plateAura{0%,100%{opacity:.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.cake-front{position:relative;width:320px;height:200px;opacity:1;transition:opacity 1s ease, transform 1s ease}
+.cake-front.hide{opacity:0;transform:scale(.9);pointer-events:none}
+.cake-front .body{position:absolute;inset:0;border-radius:8px 8px 14px 14px;background:radial-gradient(circle at 20% 30%,rgba(255,255,255,.55) 0,transparent 1.4px),radial-gradient(circle at 60% 20%,rgba(255,220,120,.65) 0,transparent 1.6px),radial-gradient(circle at 80% 55%,rgba(160,200,255,.7) 0,transparent 1.4px),radial-gradient(circle at 30% 75%,rgba(255,160,220,.6) 0,transparent 1.4px),linear-gradient(180deg,#1e2c5c 0%,#152147 45%,#0a1230 100%);background-size:44px 44px,66px 66px,55px 55px,78px 78px,100% 100%;border:1px solid rgba(140,180,255,.55);box-shadow:inset 0 -10px 24px rgba(0,0,0,.65),0 18px 36px rgba(0,0,0,.55),0 0 30px rgba(120,160,255,.45),0 0 60px rgba(90,120,255,.28)}
+.cake-front .body::before{content:"";position:absolute;top:-2px;left:-2px;right:-2px;height:26px;background:linear-gradient(180deg,#f5e6b8 0%,#d4af37 45%,#b99b4b 100%);border-radius:8px 8px 50%/8px 8px 18px;box-shadow:inset 0 -3px 6px rgba(0,0,0,.35),0 0 14px rgba(255,220,140,.6),0 0 28px rgba(255,180,80,.35)}
+.cake-front .body::after{content:"";position:absolute;inset:0;border-radius:8px 8px 14px 14px;pointer-events:none;background-image:radial-gradient(circle at 15% 60%,rgba(255,255,255,.9) 0,transparent 1px),radial-gradient(circle at 35% 40%,rgba(255,220,120,.9) 0,transparent 1.2px),radial-gradient(circle at 55% 70%,rgba(160,220,255,.9) 0,transparent 1px),radial-gradient(circle at 75% 45%,rgba(255,160,220,.85) 0,transparent 1px),radial-gradient(circle at 25% 85%,rgba(255,200,120,.75) 0,transparent 1px);background-size:32px 32px,48px 48px,40px 40px,56px 56px,44px 44px;animation:starTwinkle 4s ease-in-out infinite;box-shadow:inset 0 0 22px rgba(120,160,255,.35),inset 0 0 44px rgba(160,120,255,.2)}
+@keyframes starTwinkle{0%,100%{opacity:.85}50%{opacity:1}}
+.cake-top{position:absolute;width:340px;height:340px;opacity:0;transform:scale(.85);pointer-events:none;transition:opacity 1.2s ease,transform 1.2s ease}
+.cake-top.show{opacity:1;transform:scale(1);pointer-events:auto}
+.cake-top .circle{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55) 0,transparent 1.4px),radial-gradient(circle at 70% 25%,rgba(255,220,120,.65) 0,transparent 1.6px),radial-gradient(circle at 25% 65%,rgba(160,200,255,.7) 0,transparent 1.4px),radial-gradient(circle at 75% 70%,rgba(255,160,220,.65) 0,transparent 1.4px),linear-gradient(180deg,#1e2c5c 0%,#152147 50%,#0a1230 100%);background-size:40px 40px,60px 60px,52px 52px,72px 72px,100% 100%;border:2px solid rgba(140,180,255,.6);box-shadow:inset 0 0 30px rgba(0,0,0,.6),inset 0 0 60px rgba(140,180,255,.15),0 18px 36px rgba(0,0,0,.55),0 0 40px rgba(120,160,255,.45),0 0 80px rgba(90,120,255,.28)}
+.cake-top .circle::before{content:"";position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle at 50% 50%, transparent 55%, rgba(245,230,184,.45) 60%, rgba(212,175,55,.6) 65%, rgba(185,155,75,.85) 72%, rgba(245,230,184,.55) 78%, transparent 82%);box-shadow:inset 0 0 30px rgba(255,220,140,.4);pointer-events:none}
+.cake-top .circle::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.9) 0,transparent 1.2px),radial-gradient(circle at 40% 60%,rgba(255,220,120,.9) 0,transparent 1.4px),radial-gradient(circle at 65% 30%,rgba(160,220,255,.9) 0,transparent 1.2px),radial-gradient(circle at 80% 65%,rgba(255,160,220,.85) 0,transparent 1.2px),radial-gradient(circle at 30% 80%,rgba(180,220,255,.8) 0,transparent 1px);background-size:36px 36px,52px 52px,44px 44px,60px 60px,40px 40px;animation:starTwinkle 4s ease-in-out infinite}
+.top-cut{position:absolute;top:50%;left:50%;width:50%;height:2px;background:linear-gradient(to right,rgba(0,0,0,.9),rgba(0,0,0,.2));transform-origin:left center;opacity:0;transition:opacity .8s ease;z-index:6;pointer-events:none}
+.top-cut.show{opacity:1}
+.top-cut::after{content:"";position:absolute;inset:-1px;background:linear-gradient(to right,rgba(180,120,255,.6),transparent);filter:blur(1px)}
+.top-slice{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;opacity:1;transition:opacity 1s ease,transform 1s ease;pointer-events:none;z-index:7;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55) 0,transparent 1.4px),radial-gradient(circle at 70% 25%,rgba(255,220,120,.65) 0,transparent 1.6px),linear-gradient(180deg,#1e2c5c 0%,#152147 50%,#0a1230 100%)}
+.top-slice.removed{opacity:0;transform:scale(.3) translate(200px,-100px)}
+.top-slice.s1{clip-path:polygon(50% 50%, 100% 25%, 100% 50%)}
+.top-slice.s2{clip-path:polygon(50% 50%, 100% 50%, 90% 90%)}
+.top-slice.s3{clip-path:polygon(50% 50%, 90% 90%, 50% 100%)}
+.top-slice.s4{clip-path:polygon(50% 50%, 50% 100%, 10% 90%)}
+.top-slice.s5{clip-path:polygon(50% 50%, 10% 90%, 0% 60%)}
+.candle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#f5e6b8 0%,#b99b4b 70%,#6a5528 100%);z-index:9;box-shadow:0 0 20px rgba(212,175,55,.9),0 0 40px rgba(255,200,120,.5)}
+.candle::before{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(212,175,55,.6);pointer-events:none}
+.candle.extinguished{opacity:.4}
+.flame{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:18px;height:36px;background:radial-gradient(ellipse at 50% 75%,#fffbe0 0%,#ffe58a 25%,#ffb347 55%,#ff6a00 85%,rgba(255,60,0,0) 100%);border-radius:50% 50% 35% 35%;filter:blur(.6px) drop-shadow(0 0 26px rgba(255,190,70,.95)) drop-shadow(0 0 50px rgba(255,120,20,.5));animation:flicker 1.8s ease-in-out infinite;transform-origin:50% 100%;transition:opacity 1s ease;z-index:11}
+.flame.extinguished{opacity:0}
+@keyframes flicker{0%,100%{transform:translateX(-50%) scale(1) rotate(-1.5deg)}30%{transform:translateX(-50%) scale(1.12) rotate(1.5deg)}60%{transform:translateX(-50%) scale(.94) rotate(-2deg)}}
+.cake-front .candle{position:absolute;bottom:198px;left:50%;top:auto;transform:translateX(-50%);width:11px;height:64px;border-radius:5px 5px 3px 3px;background:linear-gradient(90deg,#6a5528 0%,#b99b4b 20%,#e8d9a8 50%,#b99b4b 80%,#6a5528 100%);box-shadow:0 0 24px rgba(212,175,55,.7),0 4px 10px rgba(0,0,0,.6)}
+.cake-front .candle::before{content:"";position:absolute;top:-8px;left:50%;width:2px;height:10px;background:#1a130a;transform:translateX(-50%);border-radius:1px;inset:auto}
+.cake-front .candle .flame{position:absolute;top:-46px;left:50%;transform:translateX(-50%);width:18px;height:36px}
+.knife{position:absolute;bottom:40px;right:-10px;width:80px;height:80px;z-index:12;cursor:pointer;opacity:0;transform:translateX(30px) rotate(-20deg);transition:all .8s cubic-bezier(.34,1.56,.64,1);pointer-events:none;filter:drop-shadow(0 0 12px rgba(212,175,55,.7))}
+.knife.show{opacity:1;transform:translateX(0) rotate(0deg);pointer-events:auto}
+.knife svg{width:100%;height:100%;fill:none;stroke:var(--gold-pale);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.knife svg .blade{fill:rgba(232,217,168,.35)}
+.knife svg .handle{fill:rgba(120,80,40,.6);stroke:var(--gold-soft)}
+.knife:hover{filter:drop-shadow(0 0 22px rgba(212,175,55,1))}
+.knife.clicked{animation:knifeChop .6s ease}
+@keyframes knifeChop{0%{transform:translateX(0) rotate(0)}30%{transform:translateX(-10px) rotate(-25deg)}60%{transform:translateX(0) rotate(0)}100%{transform:translateX(0) rotate(0)}}
+.cake-slice-view{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 1.6s ease}
+.cake-slice-view.show{display:flex;opacity:1}
+.slice-hero{position:relative;width:260px;height:300px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.7)) drop-shadow(0 0 30px rgba(212,175,55,.4));animation:sliceFloat 5s ease-in-out infinite}
+@keyframes sliceFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+.slice-hero .side{position:absolute;left:50%;top:20px;transform:translateX(-50%);width:200px;height:240px;border-radius:6px;background:linear-gradient(180deg,#1a2140 0%,#0a1230 100%);border:1px solid rgba(140,180,255,.6);box-shadow:inset 0 -20px 40px rgba(0,0,0,.5),inset 0 0 30px rgba(140,180,255,.15)}
+.slice-hero .side::before{content:"";position:absolute;top:0;left:0;right:0;height:34px;background:linear-gradient(180deg,#f5e6b8 0%,#d4af37 55%,#b99b4b 100%);border-radius:6px 6px 0 0;box-shadow:inset 0 -4px 8px rgba(0,0,0,.35),0 0 16px rgba(255,220,140,.6)}
+.slice-hero .side::after{content:"";position:absolute;top:34px;left:0;right:0;height:34px;background:repeating-linear-gradient(90deg,rgba(80,45,20,.9) 0,rgba(80,45,20,.9) 8px,rgba(120,70,30,.9) 8px,rgba(120,70,30,.9) 16px,rgba(160,90,35,.9) 16px,rgba(160,90,35,.9) 24px),radial-gradient(circle at 20% 50%,rgba(255,255,255,.7) 0,transparent 1px),radial-gradient(circle at 60% 30%,rgba(255,220,150,.9) 0,transparent 1.4px),radial-gradient(circle at 80% 70%,rgba(255,200,120,.9) 0,transparent 1.2px);background-size:auto,24px 24px,30px 30px,26px 26px;box-shadow:inset 0 -3px 6px rgba(0,0,0,.5),0 0 12px rgba(160,90,35,.6)}
+.slice-hero .layer-mid{position:absolute;left:50%;top:110px;transform:translateX(-50%);width:200px;height:60px;background:linear-gradient(180deg,#e8d9a8 0%,#b99b4b 100%);box-shadow:inset 0 -3px 6px rgba(0,0,0,.3),0 0 10px rgba(212,175,55,.4)}
+.slice-hero .layer-choco{position:absolute;left:50%;top:170px;transform:translateX(-50%);width:200px;height:56px;background:repeating-linear-gradient(90deg,rgba(60,30,15,.95) 0,rgba(60,30,15,.95) 10px,rgba(110,60,25,.95) 10px,rgba(110,60,25,.95) 20px),radial-gradient(circle at 25% 50%,rgba(255,220,150,.95) 0,transparent 1.6px),radial-gradient(circle at 55% 40%,rgba(255,220,150,.95) 0,transparent 1.8px);background-size:auto,28px 28px,36px 36px;box-shadow:inset 0 -3px 6px rgba(0,0,0,.6),0 0 10px rgba(120,70,30,.6)}
+.slice-hero .layer-base{position:absolute;left:50%;top:226px;transform:translateX(-50%);width:200px;height:14px;background:linear-gradient(180deg,#1a2140 0%,#0a1230 100%);border-radius:0 0 6px 6px;box-shadow:inset 0 -3px 6px rgba(0,0,0,.6)}
+.slice-caption{margin-top:36px;font-family:var(--ink-font);font-size:2.2rem;color:var(--gold-pale);text-shadow:0 0 30px rgba(212,175,55,.7);text-align:center;opacity:0;transition:opacity 2s ease 0.8s;letter-spacing:.08em}
+.slice-caption.show{opacity:1}
+.slice-sub{margin-top:10px;font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--ink-dim);letter-spacing:.06em;text-align:center;opacity:0;transition:opacity 2s ease 1.8s;max-width:480px}
+.slice-sub.show{opacity:1}
+.cake-hint{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--ink-dim);letter-spacing:.06em;margin-bottom:20px;text-align:center;max-width:520px;transition:opacity 1.2s ease}
+.blow-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.cut-section{display:none;flex-direction:column;align-items:center;margin-top:20px;opacity:0;transition:opacity 1.4s ease}
+.cut-section.show{display:flex;opacity:1}
+.flower-scene{display:none;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 2.4s ease;width:100%;padding:40px 20px;position:relative;z-index:420}
+.flower-scene.active{display:flex;opacity:1}
+.flower-wrap{position:relative;width:420px;max-width:90vw;margin:20px auto;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(40px) scale(.85);transition:all 2s cubic-bezier(.22,1,.36,1)}
+.flower-wrap.show{opacity:1;transform:translateY(0) scale(1)}
+.flower-wrap::before{content:"";position:absolute;inset:-40px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.28) 0%,rgba(212,175,55,.08) 40%,transparent 70%);filter:blur(20px);pointer-events:none;animation:flowerGlow 5s ease-in-out infinite}
+@keyframes flowerGlow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.flower-img{width:100%;max-width:380px;height:auto;position:relative;z-index:2;filter:drop-shadow(0 0 24px rgba(212,175,55,.55)) drop-shadow(0 0 60px rgba(212,175,55,.25));animation:flowerFloat 6s ease-in-out infinite}
+@keyframes flowerFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+.flower-caption{margin-top:36px;font-family:var(--display);font-size:1.9rem;letter-spacing:.55em;color:var(--gold-pale);text-shadow:0 0 30px rgba(212,175,55,.7);text-align:center;opacity:0;transition:opacity 2s ease 1.2s;text-transform:uppercase}
+.flower-caption.show{opacity:1}
+.flower-sub{margin-top:14px;font-family:var(--script);font-size:2.6rem;color:var(--gold-soft);letter-spacing:.06em;text-align:center;opacity:0;transition:opacity 2s ease 2.2s;text-shadow:0 0 24px rgba(212,175,55,.7)}
+.flower-sub.show{opacity:1}
+.blessing{display:none;max-width:820px;margin:60px auto 80px;text-align:left;opacity:0;transition:opacity 2.4s ease;padding:60px 40px;border-top:1px solid rgba(201,162,39,.2);border-bottom:1px solid rgba(201,162,39,.2);position:relative;z-index:420}
+.blessing.show{display:block;opacity:1}
+.blessing .to-name{display:block;font-family:var(--script);font-size:4.5rem;line-height:1;color:var(--gold-pale);text-shadow:0 0 30px rgba(212,175,55,.6);margin-bottom:24px;text-align:center}
+.blessing .title{display:block;font-family:var(--display);font-size:1.15rem;letter-spacing:.5em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:48px;text-align:center}
+.type-line{font-family:var(--ink-font);font-size:1.7rem;line-height:2.2;color:var(--ink);margin-bottom:1em;min-height:2em;letter-spacing:.06em;position:relative;transition:padding-left .3s ease}
+.type-line.active{padding-left:14px}
+.type-line .ch{position:relative;display:inline-block;color:var(--ink);text-shadow:0 0 2px rgba(232,217,168,.35),0 0 6px rgba(232,217,168,.25),0 0 12px rgba(212,175,55,.18),0 0 24px rgba(212,175,55,.08);animation:inkSpread .9s ease-out}
+@keyframes inkSpread{0%{filter:blur(6px);opacity:0;transform:scale(.6)}40%{filter:blur(2px);opacity:.9;transform:scale(1.06)}100%{filter:blur(0);opacity:1;transform:scale(1)}}
+.type-line .ch::after{content:attr(data-ch);position:absolute;inset:0;color:rgba(232,217,168,.35);filter:blur(3px);opacity:.6;z-index:-1;animation:inkHalo 2.4s ease-out}
+@keyframes inkHalo{0%{opacity:0;filter:blur(2px);transform:scale(1)}30%{opacity:.7;filter:blur(6px);transform:scale(1.15)}100%{opacity:.25;filter:blur(4px);transform:scale(1.05)}}
+.type-line .caret{display:inline-block;width:3px;height:1.4em;background:var(--gold-pale);color:var(--gold-pale);animation:blink 1s steps(2) infinite;margin-left:4px;vertical-align:middle;box-shadow:0 0 10px var(--gold-soft)}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.blessing .signature{display:block;margin-top:48px;font-family:var(--display);font-size:.85rem;letter-spacing:.5em;color:var(--ink-dim);text-transform:uppercase;text-align:center}
+.corner-symbols{position:fixed;bottom:28px;left:0;right:0;display:flex;justify-content:space-around;padding:0 40px;pointer-events:none;z-index:500}
+.symbol{pointer-events:auto;position:relative;font-size:1.5rem;color:rgba(201,162,39,.35);transition:all .6s ease;cursor:default}
+.symbol:hover{color:var(--gold-pale);transform:translateY(-4px)}
+.tooltip{position:absolute;bottom:150%;left:50%;transform:translateX(-50%);background:rgba(10,22,18,.95);border:1px solid rgba(201,162,39,.5);color:var(--ink);padding:12px 20px;font-family:var(--serif);font-size:.9rem;white-space:nowrap;border-radius:2px;opacity:0;transition:opacity .5s ease;pointer-events:none;backdrop-filter:blur(8px)}
+.symbol:hover .tooltip{opacity:1}
+.tooltip small{display:block;margin-top:6px;font-size:.78rem;color:var(--ink-dim);font-style:italic}
+.fw-btn{position:fixed;right:32px;bottom:100px;z-index:800;background:rgba(10,22,18,.7);border:1px solid rgba(201,162,39,.5);color:var(--gold-pale);font-family:var(--display);font-size:.7rem;letter-spacing:.4em;padding:12px 22px;text-transform:uppercase;cursor:pointer;border-radius:1px;backdrop-filter:blur(8px);transition:all .6s ease;opacity:0;pointer-events:none}
+.fw-btn.show{opacity:1;pointer-events:auto}
+.fw-btn:hover{border-color:var(--gold-pale);color:#fffbe8;box-shadow:0 0 28px rgba(212,175,55,.3)}
+.watermark{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);font-family:var(--display);font-size:.6rem;letter-spacing:.5em;color:rgba(201,162,39,.25);text-transform:uppercase;z-index:100;pointer-events:none}
+.starlabel{position:fixed;top:30px;left:30px;z-index:100;font-family:var(--display);font-size:.6rem;letter-spacing:.35em;color:rgba(232,217,168,.35);text-transform:uppercase;pointer-events:none;line-height:1.8}
+.starlabel strong{display:block;font-weight:400;color:rgba(232,217,168,.6);font-size:.65rem;letter-spacing:.4em}
+.egg{position:fixed;bottom:10px;right:24px;font-family:var(--display);font-size:.6rem;letter-spacing:.35em;color:rgba(201,162,39,.15);text-transform:uppercase;transition:color .6s ease;cursor:default;z-index:600}
+.egg:hover{color:rgba(232,217,168,.9)}
+@media (max-width:720px){
+  .compass-wrap{width:260px;height:260px}.compass{width:220px;height:220px}.compass-needle{height:80px}.compass-core{width:80px;height:80px}
+  .btn{font-size:.8rem;padding:14px 36px}
+  .tarot-row{gap:20px}.tarot-card{width:140px;height:240px}.tarot-icon{font-size:2.2rem}
+  .puzzle-box{padding:32px 24px}.scramble{font-size:1.1rem}.hero-anim{width:80px;height:80px}
+  .to-name{font-size:3rem}.type-line{font-size:1.2rem;line-height:1.9}
+  .cake-wrap{width:340px;height:340px}.cake-front{width:240px;height:150px}.cake-front .candle{height:48px;bottom:148px}
+  .cake-top{width:260px;height:260px}.knife{width:60px;height:60px}
+  .slice-hero{width:200px;height:240px}.slice-hero .side{width:160px;height:190px}
+  .slice-hero .layer-mid,.slice-hero .layer-choco{width:160px}.slice-hero .layer-choco{top:140px}.slice-hero .layer-base{top:186px;width:160px}
+  .slice-caption{font-size:1.6rem}
+  .flower-wrap{width:300px}.flower-caption{font-size:1.4rem;letter-spacing:.4em}.flower-sub{font-size:2rem}
+  .blessing{padding:40px 20px}.blessing .to-name{font-size:3rem}
+}
+</style>
+</head>
+<body>
+<canvas class="starmap" id="starmap"></canvas>
+<div class="mist"></div>
+<div class="particles" id="particles"></div>
+<div class="noise"></div>
+<div class="vignette"></div>
+<div class="darkness" id="darkness"></div>
+<div class="starlabel"><strong>✦ 2008 · 01 · 03</strong>Night sky over Xi'an</div>
+<div class="flash" id="flash"></div>
+<div class="success-mark" id="successMark"></div>
+
+<div class="stage">
+  <div id="sceneCompass">
+    <div class="compass-wrap" id="compassWrap">
+      <div class="compass" id="compass"><div class="compass-needle"></div></div>
+      <div class="compass-core"></div>
+    </div>
+    <button class="btn" id="btnStart">开启魔法</button>
+  </div>
+
+  <div class="tarot-scene" id="tarotScene">
+    <div class="tarot-title">The Three Cards · 过去 · 现在 · 未来</div>
+    <div class="tarot-row">
+      <div class="tarot-card" data-card="past"><div class="tarot-card-inner"><div class="tarot-face tarot-back"></div><div class="tarot-face tarot-front"><div class="tarot-label">Ⅰ · 过去</div><div class="tarot-icon">🏯</div><div class="tarot-name">西安</div><div class="tarot-caption">凉皮、肉夹馍、冰峰<br>藏在梦里的味道</div></div></div></div>
+      <div class="tarot-card" data-card="present"><div class="tarot-card-inner"><div class="tarot-face tarot-back"></div><div class="tarot-face tarot-front"><div class="tarot-label">Ⅱ · 现在</div><div class="tarot-icon">🦅</div><div class="tarot-name">浙大</div><div class="tarot-caption">求是之鹰<br>摩斯低语回应你</div></div></div></div>
+      <div class="tarot-card" data-card="future"><div class="tarot-card-inner"><div class="tarot-face tarot-back"></div><div class="tarot-face tarot-front"><div class="tarot-label">Ⅲ · 未来</div><div class="tarot-icon">⚡</div><div class="tarot-name">英雄</div><div class="tarot-caption">钢铁之心<br>与蜘蛛的第六感</div></div></div></div>
+    </div>
+  </div>
+
+  <div class="cake-scene" id="cakeScene">
+    <div class="cake-wrap" id="cakeWrap">
+      <div class="candle-glow" id="candleGlow"></div>
+      <div class="cake-plate"></div>
+      <div class="cake-front" id="cakeFront">
+        <div class="body"></div>
+        <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
+      </div>
+      <div class="cake-top" id="cakeTop">
+        <div class="circle"></div>
+        <div class="top-cut" data-cut="1" style="transform:rotate(0deg)"></div>
+        <div class="top-cut" data-cut="2" style="transform:rotate(72deg)"></div>
+        <div class="top-cut" data-cut="3" style="transform:rotate(144deg)"></div>
+        <div class="top-cut" data-cut="4" style="transform:rotate(216deg)"></div>
+        <div class="top-cut" data-cut="5" style="transform:rotate(288deg)"></div>
+        <div class="top-slice s1" data-slice="1"></div>
+        <div class="top-slice s2" data-slice="2"></div>
+        <div class="top-slice s3" data-slice="3"></div>
+        <div class="top-slice s4" data-slice="4"></div>
+        <div class="top-slice s5" data-slice="5"></div>
+      </div>
+      <div class="knife" id="knife">
+        <svg viewBox="0 0 100 100">
+          <path class="blade" d="M12 72 L60 24 Q68 16 78 26 Q88 36 80 46 L32 94 Z"/>
+          <path class="handle" d="M78 26 Q86 18 94 26 Q100 32 94 40 L86 48 Q78 56 70 48 Z"/>
+          <circle cx="46" cy="48" r="2" fill="#d4af37"/>
+        </svg>
+      </div>
+      <div class="cake-slice-view" id="cakeSliceView">
+        <div class="slice-hero">
+          <div class="side"></div>
+          <div class="layer-mid"></div>
+          <div class="layer-choco"></div>
+          <div class="layer-base"></div>
+        </div>
+        <div class="slice-caption" id="sliceCaption">奶油 · 榛子 · 巧克力</div>
+        <div class="slice-sub" id="sliceSub">第一口给你，愿你被甜蜜拥抱。</div>
+      </div>
+    </div>
+    <div class="cake-hint" id="cakeHint">闭上眼睛，许个愿，然后吹灭蜡烛吧。</div>
+    <div class="blow-actions"><button class="btn-quiet" id="btnBlow">手动吹灭</button></div>
+    <div class="cut-section" id="cutSection"><button class="btn-quiet" id="btnCut">✦ 拿起刀 · 切蛋糕 ✦</button></div>
+  </div>
+
+  <div class="flower-scene" id="flowerScene">
+    <div class="flower-wrap" id="flowerWrap"><img class="flower-img" src="flower.png" alt="一束花"></div>
+    <div class="flower-caption" id="flowerCaption">FLOWER GIRL</div>
+    <div class="flower-sub" id="flowerSub">Happy Birthday</div>
+  </div>
+
+  <div class="blessing" id="blessing">
+    <span class="to-name">To wym</span>
+    <span class="title">19 岁 · 生日快乐</span>
+    <div id="typingArea"></div>
+    <span class="signature">— 天津南开的 hansu</span>
+  </div>
+</div>
+
+<button class="fw-btn" id="fwBtn">✦ Fireworks ✦</button>
+
+<div class="corner-symbols">
+  <div class="symbol">🏯<div class="tooltip">西安见！<small>魔法再强，也顶不住咱西安的一口肉夹馍🥙。</small></div></div>
+  <div class="symbol">🦅<div class="tooltip">浙大 · 求是<small>求是创新，鹰击长空。</small></div></div>
+  <div class="symbol">🏛️<div class="tooltip">南开 · 牵挂<small>允公允能，日新月异。</small></div></div>
+</div>
+<div class="egg">Wake with wonder. Yield to grace. March toward light.</div>
+<div class="puzzle-overlay" id="puzzleOverlay"><div class="puzzle-box"><div class="puzzle-title" id="puzzleTitle">Ⅰ · 过去</div><div class="puzzle-subtitle" id="puzzleSubtitle">迷雾中的味道</div><div id="puzzleContent"></div></div></div>
+
+<script>
+(function(){
+// ===== 音效引擎（只有关键音效，没有背景音乐） =====
+let sfxCtx=null;
+function ensureSfx(){
+  if(!sfxCtx){try{sfxCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+  if(sfxCtx&&sfxCtx.state==='suspended')sfxCtx.resume();
+  return sfxCtx;
+}
+// 通用单音
+function tone(freq,dur,when,type,vol){
+  const a=ensureSfx();if(!a)return;
+  const o=a.createOscillator(),g=a.createGain();
+  o.type=type||'sine';o.frequency.value=freq;
+  g.gain.setValueAtTime(0,when);
+  g.gain.linearRampToValueAtTime(vol||0.10,when+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,when+dur);
+  o.connect(g);g.connect(a.destination);
+  o.start(when);o.stop(when+dur);
+}
+// 铃音：优雅和弦 + 一点泛音
+function bell(freqs,dur){
+  const a=ensureSfx();if(!a)return;
+  const now=a.currentTime;
+  freqs.forEach((f,i)=>{
+    tone(f,dur,now+i*0.05,'sine',0.09);
+    // 泛音
+    tone(f*2,dur*0.7,now+i*0.05,'sine',0.03);
+    tone(f*3,dur*0.5,now+i*0.05,'sine',0.012);
+  });
+}
+// 点「开启魔法」：空灵开场铃音
+function playOpenBell(){
+  bell([659.25, 987.77, 1318.51],2.6);
+}
+// 塔罗牌翻开：轻"叮"
+function playCardDing(){
+  bell([880,1320],0.9);
+}
+// 解谜成功
+function playSuccess(){
+  bell([659.25,987.77],1.4);
+}
+// 吹灭蜡烛
+function playChime(){
+  bell([1318.51,1760,2637],2.0);
+}
+// 生日歌：干净的八音盒（只用 sine，主音 + 极轻高八度，无三倍频）
+function playBirthdaySong(){
+  try{
+    const a=ensureSfx();if(!a)return;
+    const now=a.currentTime+0.05;
+    const notes=[{n:392,d:.5},{n:392,d:.25},{n:440,d:.75},{n:392,d:.75},{n:523.25,d:.75},{n:493.88,d:1.5},{n:392,d:.5},{n:392,d:.25},{n:440,d:.75},{n:392,d:.75},{n:587.33,d:.75},{n:523.25,d:1.5},{n:392,d:.5},{n:392,d:.25},{n:784,d:.75},{n:659.25,d:.75},{n:523.25,d:.75},{n:493.88,d:.75},{n:440,d:1.5},{n:698.46,d:.5},{n:698.46,d:.25},{n:659.25,d:.75},{n:523.25,d:.75},{n:587.33,d:.75},{n:523.25,d:2}];
+    let t=now;const tempoScale=0.48;
+    notes.forEach(note=>{
+      const dur=note.d*tempoScale;
+      // 主音
+      const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=note.n;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(.16,t+0.06);
+      g.gain.setValueAtTime(.16,t+dur*0.5);
+      g.gain.exponentialRampToValueAtTime(.001,t+dur*1.0);
+      o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur*1.05);
+      // 极轻高八度
+      const o2=a.createOscillator(),g2=a.createGain();o2.type='sine';o2.frequency.value=note.n*2;
+      g2.gain.setValueAtTime(0,t);
+      g2.gain.linearRampToValueAtTime(.025,t+0.05);
+      g2.gain.exponentialRampToValueAtTime(.001,t+dur*0.85);
+      o2.connect(g2);g2.connect(a.destination);o2.start(t);o2.stop(t+dur);
+      t+=dur;
+    });
+  }catch(e){}
+}
+// 打字机音效
+let typeAudioCtx=null;
+function playTypeSound(){
+  const a=ensureSfx();if(!a)return;
+  try{
+    const o=a.createOscillator(),g=a.createGain();
+    o.type='square';o.frequency.value=1500+Math.random()*400;
+    g.gain.value=.015;
+    o.connect(g);g.connect(a.destination);
+    const now=a.currentTime;
+    g.gain.setValueAtTime(.015,now);
+    g.gain.exponentialRampToValueAtTime(.0001,now+0.035);
+    o.start(now);o.stop(now+0.045);
+  }catch(e){}
+}
+
+// ===== 星图 =====
+const stars=[{x:.62,y:.58,r:1.6},{x:.68,y:.62,r:1.4},{x:.65,y:.66,r:1.0},{x:.655,y:.665,r:.9},{x:.645,y:.665,r:.9},{x:.70,y:.70,r:1.5},{x:.60,y:.72,r:1.3},{x:.72,y:.78,r:2.0},{x:.78,y:.80,r:1.0},{x:.75,y:.85,r:1.1},{x:.70,y:.84,r:.9},{x:.55,y:.62,r:1.4},{x:.48,y:.50,r:1.5},{x:.45,y:.48,r:.8},{x:.42,y:.38,r:1.4},{x:.55,y:.38,r:1.2},{x:.58,y:.36,r:1.1},{x:.50,y:.44,r:.6},{x:.51,y:.43,r:.5},{x:.49,y:.45,r:.5},{x:.52,y:.45,r:.5},{x:.40,y:.55,r:.8},{x:.38,y:.60,r:.7},{x:.35,y:.65,r:.7},{x:.30,y:.30,r:.7},{x:.75,y:.35,r:.7},{x:.20,y:.50,r:.6},{x:.85,y:.55,r:.6},{x:.15,y:.70,r:.7},{x:.90,y:.30,r:.7},{x:.80,y:.15,r:.6},{x:.35,y:.85,r:.7},{x:.25,y:.20,r:.6},{x:.65,y:.10,r:.6}];
+const canvas=document.getElementById('starmap'),ctx=canvas.getContext('2d');let dpr=window.devicePixelRatio||1,W,H;
+function resize(){W=window.innerWidth;H=window.innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
+window.addEventListener('resize',resize);resize();
+const phases=stars.map(()=>Math.random()*Math.PI*2);
+function drawStars(t){ctx.clearRect(0,0,W,H);const ang=t*.00008;
+const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,'rgba(180,200,220,0)');grad.addColorStop(.4,'rgba(200,210,220,.025)');grad.addColorStop(.6,'rgba(200,210,220,.04)');grad.addColorStop(1,'rgba(180,200,220,0)');ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+stars.forEach((s,i)=>{const dx=s.x-.5,dy=s.y-.5,c=Math.cos(ang),sn=Math.sin(ang);const rx=dx*c-dy*sn,ry=dx*sn+dy*c;const px=(rx+.5)*W,py=(ry+.5)*H;const tw=.75+.25*Math.sin(t*.002+phases[i]);const r=s.r*1.1*(W/1600)*1.5;
+const glow=ctx.createRadialGradient(px,py,0,px,py,r*7);glow.addColorStop(0,`rgba(255,245,210,${.55*tw})`);glow.addColorStop(.3,`rgba(212,175,55,${.18*tw})`);glow.addColorStop(1,'rgba(212,175,55,0)');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(px,py,r*7,0,Math.PI*2);ctx.fill();
+ctx.fillStyle=`rgba(255,250,230,${.95*tw})`;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();
+if(s.r>=1.3){ctx.strokeStyle=`rgba(255,245,210,${.5*tw})`;ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(px-r*4,py);ctx.lineTo(px+r*4,py);ctx.moveTo(px,py-r*4);ctx.lineTo(px,py+r*4);ctx.stroke()}});
+requestAnimationFrame(drawStars)}requestAnimationFrame(drawStars);
+
+const pc=document.getElementById('particles');for(let i=0;i<40;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.bottom='-5vh';p.style.animationDuration=(14+Math.random()*18)+'s';p.style.animationDelay=(Math.random()*18)+'s';const s=1+Math.random()*2;p.style.width=s+'px';p.style.height=s+'px';pc.appendChild(p)}
+
+const compass=document.getElementById('compass');for(let i=0;i<12;i++){const r=document.createElement('div');r.className='compass-rune';const a=(i/12)*Math.PI*2;const x=Math.cos(a)*118,y=Math.sin(a)*118;r.style.left=`calc(50% + ${x}px)`;r.style.top=`calc(50% + ${y}px)`;r.style.transform='translate(-50%,-50%)';r.style.opacity=(.4+Math.random()*.5).toString();compass.appendChild(r)}
+
+const btnStart=document.getElementById('btnStart'),compassWrap=document.getElementById('compassWrap'),tarotScene=document.getElementById('tarotScene'),sceneCompass=document.getElementById('sceneCompass');
+btnStart.addEventListener('click',()=>{
+// 空灵开场铃音
+playOpenBell();
+compass.style.animationDuration='1.2s';btnStart.classList.add('fade-out');
+setTimeout(()=>compassWrap.classList.add('fade-out'),900);
+setTimeout(()=>{sceneCompass.style.display='none';tarotScene.classList.add('active')},2200);
+});
+
+const cards=document.querySelectorAll('.tarot-card');
+const overlay=document.getElementById('puzzleOverlay');
+const puzzleTitle=document.getElementById('puzzleTitle');
+const puzzleSubtitle=document.getElementById('puzzleSubtitle');
+const puzzleContent=document.getElementById('puzzleContent');
+const flash=document.getElementById('flash');
+const successMark=document.getElementById('successMark');
+const progress={past:false,present:false,future:false};
+function showSuccess(text){successMark.textContent=text;successMark.classList.add('show');setTimeout(()=>successMark.classList.remove('show'),2400)}
+function goToCake(){
+  overlay.classList.remove('show');
+  tarotScene.classList.remove('active');
+  setTimeout(()=>{
+    tarotScene.style.display='none';
+    document.getElementById('cakeScene').classList.add('active');
+    initMicrophone();
+  },800);
+  setTimeout(()=>{document.getElementById('fwBtn').classList.add('show')},1500);
+}
+function checkAllUnlocked(){
+  if(progress.past&&progress.present&&progress.future){
+    setTimeout(()=>{
+      flash.classList.add('on');
+      setTimeout(()=>flash.classList.remove('on'),500);
+      setTimeout(()=>{
+        overlay.classList.remove('show');
+        puzzleContent.innerHTML='<div style="font-family:var(--script);font-size:2.4rem;color:var(--gold-pale);text-shadow:0 0 30px var(--gold-soft);margin:20px 0;">To wym</div><div class="puzzle-subtitle" style="font-size:1.05rem;line-height:1.9;">三张牌已全部开启……<br>生日蛋糕正在降临。</div>';
+        puzzleTitle.textContent='✦ 解谜完成 ✦';puzzleSubtitle.textContent='';
+        overlay.classList.add('show');
+        setTimeout(goToCake,2200);
+      },700);
+    },600);
+  }
+}
+cards.forEach(card=>{card.addEventListener('click',()=>{const type=card.dataset.card;if(card.classList.contains('flipped')){openPuzzle(type);return}card.classList.add('flipped');playCardDing();setTimeout(()=>openPuzzle(type),900)})});
+function openPuzzle(type){if(type==='past'){progress.past?renderPastSolved():renderPast()}else if(type==='present'){progress.present?renderPresentSolved():renderPresent()}else{progress.future?renderFutureSolved():renderFuture()}overlay.classList.add('show')}
+
+const xiFoods=[{name:'肉夹馍',x:22,y:28,img:'food1.png'},{name:'凉皮',x:72,y:30,img:'food2.png'},{name:'冰峰',x:48,y:72,img:'food3.png'}];
+let foundFoods=[];
+function renderPast(){
+  puzzleTitle.textContent='Ⅰ · 过去';puzzleSubtitle.textContent='迷雾中的味道 · 找出三样西安的记忆';
+  puzzleContent.innerHTML=`<div class="hint-text">梦核迷雾里藏着三样西安的味道。<br>轻轻点击它们，唤醒那段时光。</div><div class="symbols-area" id="symbolsArea"></div><div class="scramble" id="scrambleDisplay">· · ·</div><div class="puzzle-actions"><button class="btn-quiet" id="closePuzzle">暂且合上</button></div>`;
+  foundFoods=[];const area=document.getElementById('symbolsArea');
+  xiFoods.forEach((f,idx)=>{
+    const el=document.createElement('div');el.className='hidden-symbol';el.innerHTML=`<img src="${f.img}" alt="${f.name}">`;
+    el.style.left=f.x+'%';el.style.top=f.y+'%';el.style.transform='translate(-50%,-50%)';
+    el.style.width='90px';el.style.height='90px';el.dataset.idx=idx;
+    el.style.animation=`foodFloat ${4+idx}s ease-in-out infinite`;
+    el.addEventListener('click',()=>{if(foundFoods.includes(idx))return;foundFoods.push(idx);el.classList.add('found');playCardDing();updateScramble();if(foundFoods.length===3){progress.past=true;document.querySelector('[data-card="past"]').classList.add('unlocked');setTimeout(()=>{const sd=document.getElementById('scrambleDisplay');sd.textContent='长 安';sd.classList.add('solved');playSuccess();showSuccess('Ⅰ · 过去 已解锁');checkAllUnlocked()},600)}});
+    area.appendChild(el);
+  });
+  document.getElementById('closePuzzle').addEventListener('click',()=>overlay.classList.remove('show'));
+}
+function updateScramble(){const sd=document.getElementById('scrambleDisplay');const arr=['·','·','·'];if(foundFoods.includes(0))arr[0]='长';if(foundFoods.includes(1))arr[1]='安';if(foundFoods.length===2)arr[2]='安';sd.textContent=arr.join(' ')}
+function renderPastSolved(){puzzleTitle.textContent='Ⅰ · 过去';puzzleSubtitle.textContent='长安 · 已唤醒';puzzleContent.innerHTML=`<div class="scramble solved">长 安</div><div class="hint-text" style="margin-top:24px;">肉夹馍、凉皮、冰峰——<br>这就是我们记忆里的西安。</div><div class="puzzle-actions" style="margin-top:24px;"><button class="btn-quiet" id="closePuzzle">合上</button></div>`;document.getElementById('closePuzzle').addEventListener('click',()=>overlay.classList.remove('show'))}
+
+function renderPresent(){
+  puzzleTitle.textContent='Ⅱ · 现在';puzzleSubtitle.textContent='求是之鹰 · 摩斯低语';
+  puzzleContent.innerHTML=`<div class="morse-display">--.- ..- .. ... .... ..</div><div class="morse-hint">这是一句来自求是园的低语。<br>在下方输入它对应的拼音吧。</div><input class="puzzle-input" id="morseInput" placeholder="输入拼音" maxlength="8" autocomplete="off"><div class="puzzle-actions"><button class="btn-quiet" id="submitMorse">确认</button><button class="btn-quiet" id="closePuzzle">暂且合上</button></div>`;
+  const input=document.getElementById('morseInput');setTimeout(()=>input.focus(),300);
+  const submit=()=>{const val=input.value.trim().toUpperCase();if(val==='QIUSHI'){progress.present=true;document.querySelector('[data-card="present"]').classList.add('unlocked');playSuccess();showSuccess('Ⅱ · 现在 已解锁');renderPresentSolved();checkAllUnlocked()}else{input.style.borderColor='rgba(200,80,60,.8)';input.value='';input.placeholder='再想想…';setTimeout(()=>{input.style.borderColor='rgba(201,162,39,.4)';input.placeholder='输入拼音'},1200)}};
+  document.getElementById('submitMorse').addEventListener('click',submit);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
+  document.getElementById('closePuzzle').addEventListener('click',()=>overlay.classList.remove('show'));
+}
+function renderPresentSolved(){puzzleTitle.textContent='Ⅱ · 现在';puzzleSubtitle.textContent='求是 · 已聆听';puzzleContent.innerHTML=`<div class="scramble solved">求是</div><div class="hint-text" style="margin-top:24px;">求是创新，鹰击长空。<br>浙大的风会一直吹向你。</div><div class="puzzle-actions" style="margin-top:24px;"><button class="btn-quiet" id="closePuzzle">合上</button></div>`;document.getElementById('closePuzzle').addEventListener('click',()=>overlay.classList.remove('show'))}
+
+function renderFuture(){
+  puzzleTitle.textContent='Ⅲ · 未来';puzzleSubtitle.textContent='钢铁之心 · 蜘蛛第六感';
+  puzzleContent.innerHTML=`<div class="hint-text">点亮两种英雄的力量，<br>它们会为你打开通往未来的门。</div><div class="hero-anims"><div class="hero-anim" id="animIron"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="26"/><circle cx="50" cy="50" r="14"/><circle cx="50" cy="50" r="5" fill="#d4af37" stroke="none"/><path d="M50 18 L50 26 M50 74 L50 82 M18 50 L26 50 M74 50 L82 50"/></svg></div><div class="hero-anim" id="animSpidey"><svg viewBox="0 0 100 100"><path d="M28 44 Q50 18 72 44 Q50 72 28 44 Z"/><ellipse cx="42" cy="47" rx="5" ry="8"/><ellipse cx="58" cy="47" rx="5" ry="8"/><path d="M28 64 Q50 70 72 64"/></svg></div></div><div class="puzzle-actions"><button class="btn-quiet" id="closePuzzle">暂且合上</button></div>`;
+  let ironOn=false,spideyOn=false;
+  const check=()=>{if(ironOn&&spideyOn){progress.future=true;document.querySelector('[data-card="future"]').classList.add('unlocked');flash.classList.add('on');setTimeout(()=>flash.classList.remove('on'),600);playSuccess();showSuccess('Ⅲ · 未来 已解锁');setTimeout(()=>renderFutureSolved(),800);checkAllUnlocked()}};
+  document.getElementById('animIron').addEventListener('click',function(){this.classList.add('activated');ironOn=true;playCardDing();check()});
+  document.getElementById('animSpidey').addEventListener('click',function(){this.classList.add('activated');spideyOn=true;playCardDing();check()});
+  document.getElementById('closePuzzle').addEventListener('click',()=>overlay.classList.remove('show'));
+}
+function renderFutureSolved(){puzzleTitle.textContent='Ⅲ · 未来';puzzleSubtitle.textContent='英雄 · 已觉醒';puzzleContent.innerHTML=`<div class="scramble solved">勇敢 · 灵动</div><div class="hint-text" style="margin-top:24px;">像钢铁侠一样勇敢，<br>像蜘蛛侠一样灵动。</div><div class="puzzle-actions" style="margin-top:24px;"><button class="btn-quiet" id="closePuzzle">合上</button></div>`;document.getElementById('closePuzzle').addEventListener('click',()=>overlay.classList.remove('show'))}
+
+let micStream=null,audioCtx=null,analyser=null,dataArr=null,micInterval=null,candleBlown=false;
+function initMicrophone(){
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+      micStream=stream;audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+      analyser=audioCtx.createAnalyser();analyser.fftSize=256;
+      const src=audioCtx.createMediaStreamSource(stream);src.connect(analyser);
+      dataArr=new Uint8Array(analyser.frequencyBinCount);
+      micInterval=setInterval(()=>{if(candleBlown)return;analyser.getByteFrequencyData(dataArr);let sum=0;for(let i=0;i<dataArr.length;i++)sum+=dataArr[i];if(sum/dataArr.length>50)beginBlowCeremony()},150);
+    }).catch(()=>{});
+  }
+}
+document.getElementById('btnBlow').addEventListener('click',beginBlowCeremony);
+
+let ceremonyStarted=false;
+function beginBlowCeremony(){
+  if(candleBlown||ceremonyStarted)return;
+  ceremonyStarted=true;
+  document.getElementById('darkness').classList.add('on');
+  setTimeout(()=>{playBirthdaySong()},2500);
+  setTimeout(()=>{actuallyBlowCandle()},16000);
+}
+function actuallyBlowCandle(){
+  if(candleBlown)return;
+  candleBlown=true;
+  document.getElementById('flame').classList.add('extinguished');
+  document.getElementById('candle').classList.add('extinguished');
+  document.getElementById('candleGlow').classList.add('off');
+  document.getElementById('cakeHint').textContent='愿望已经收到 ✦';
+  if(micInterval){clearInterval(micInterval);micInterval=null}
+  if(micStream){micStream.getTracks().forEach(t=>t.stop())}
+  playChime();
+  setTimeout(()=>{document.getElementById('darkness').classList.remove('on');document.getElementById('darkness').classList.add('off')},600);
+  startFireworks(true);
+  setTimeout(()=>stopFireworks(),15000);
+  setTimeout(()=>document.getElementById('cutSection').classList.add('show'),2000);
+}
+
+let cutsDone=0;
+const totalCuts=5;
+document.getElementById('btnCut').addEventListener('click',()=>{
+  document.getElementById('cakeFront').classList.add('hide');
+  setTimeout(()=>{
+    document.getElementById('cakeTop').classList.add('show');
+    document.getElementById('knife').classList.add('show');
+    document.getElementById('btnCut').style.display='none';
+    document.getElementById('cakeHint').textContent='点击小刀 · 切下一块蛋糕（0 / 5）';
+  },900);
+});
+document.getElementById('knife').addEventListener('click',()=>{
+  if(cutsDone>=totalCuts)return;
+  cutsDone++;
+  const knife=document.getElementById('knife');
+  knife.classList.remove('clicked');void knife.offsetWidth;knife.classList.add('clicked');
+  const line=document.querySelector(`.top-cut[data-cut="${cutsDone}"]`);
+  if(line)line.classList.add('show');
+  const slice=document.querySelector(`.top-slice[data-slice="${cutsDone}"]`);
+  if(slice)setTimeout(()=>slice.classList.add('removed'),300);
+  playCardDing();
+  document.getElementById('cakeHint').textContent=`点击小刀 · 切下一块蛋糕（${cutsDone} / ${totalCuts}）`;
+  if(cutsDone>=totalCuts){
+    document.getElementById('cakeHint').textContent='蛋糕切好啦 ✦ 请收下这份心意';
+    setTimeout(()=>{
+      document.getElementById('cakeTop').style.opacity='0';
+      document.getElementById('knife').style.opacity='0';
+      setTimeout(()=>{
+        document.getElementById('cakeSliceView').classList.add('show');
+        setTimeout(()=>document.getElementById('sliceCaption').classList.add('show'),600);
+        setTimeout(()=>document.getElementById('sliceSub').classList.add('show'),1400);
+        setTimeout(()=>goToFlower(),7500);
+      },800);
+    },1800);
+  }
+});
+
+function goToFlower(){
+  const cakeScene=document.getElementById('cakeScene');
+  const flowerScene=document.getElementById('flowerScene');
+  cakeScene.style.transition='opacity 1.4s ease';
+  cakeScene.style.opacity='0';
+  setTimeout(()=>{
+    cakeScene.classList.remove('active');
+    cakeScene.style.display='none';
+    flowerScene.classList.add('active');
+    setTimeout(()=>document.getElementById('flowerWrap').classList.add('show'),200);
+    setTimeout(()=>document.getElementById('flowerCaption').classList.add('show'),900);
+    setTimeout(()=>document.getElementById('flowerSub').classList.add('show'),1900);
+    setTimeout(()=>{
+      flowerScene.style.transition='opacity 1.6s ease';
+      flowerScene.style.opacity='0';
+      setTimeout(()=>{
+        flowerScene.classList.remove('active');
+        flowerScene.style.display='none';
+        const b=document.getElementById('blessing');
+        b.classList.add('show');b.style.display='block';
+        b.scrollIntoView({behavior:'smooth',block:'start'});
+        setTimeout(()=>startTyping(),800);
+      },1600);
+    },9000);
+  },1500);
+}
+
+const blessingLines=['大胆去追求想要的人生，今天的你没有流星也能许愿哦！','想说的话很多，想念当时我们做同桌时叽叽喳喳的聊天，想念西安馋人的魏家，不想念高三但可以怀念高三的有些人有些事。','想了很久送什么礼物，太普通的不够，太复杂的又遮盖了祝福，就用这个小小的网站开启你的 19 岁，无限无限可能的世界！','想说什么随时在，我会陪你的。'];
+function startTyping(){
+  const area=document.getElementById('typingArea');
+  area.innerHTML='';
+  let lineIdx=0;
+  function typeLine(){
+    if(lineIdx>=blessingLines.length)return;
+    const text=blessingLines[lineIdx];
+    const line=document.createElement('div');
+    line.className='type-line active';
+    area.appendChild(line);
+    let charIdx=0;
+    function typeChar(){
+      if(charIdx<text.length){
+        const ch=text[charIdx];
+        const span=document.createElement('span');
+        span.className='ch';
+        span.textContent=ch;
+        span.setAttribute('data-ch',ch);
+        const oldCaret=line.querySelector('.caret');if(oldCaret)oldCaret.remove();
+        line.appendChild(span);
+        const caret=document.createElement('span');caret.className='caret';line.appendChild(caret);
+        if(ch!==' '&&ch!=='，'&&ch!=='。'&&ch!=='、'&&ch!=='！'&&ch!=='？')playTypeSound();
+        charIdx++;
+        setTimeout(typeChar,140+Math.random()*90);
+      } else {
+        const oldCaret=line.querySelector('.caret');if(oldCaret)oldCaret.remove();
+        line.classList.remove('active');
+        lineIdx++;
+        setTimeout(typeLine,1400);
+      }
+    }
+    typeChar();
+  }
+  typeLine();
+}
+
+const fwCanvas=document.createElement('canvas');fwCanvas.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:950';document.body.appendChild(fwCanvas);
+const fwCtx=fwCanvas.getContext('2d');let fwW,fwH;
+function fwResize(){fwW=window.innerWidth;fwH=window.innerHeight;const d=window.devicePixelRatio||1;fwCanvas.width=fwW*d;fwCanvas.height=fwH*d;fwCanvas.style.width=fwW+'px';fwCanvas.style.height=fwH+'px';fwCtx.setTransform(d,0,0,d,0,0)}
+window.addEventListener('resize',fwResize);fwResize();
+let fwParticles=[],fwRunning=false,meteorTimer=null,meteors=[];
+function launchFirework(cx,cy){
+  const count=90+Math.floor(Math.random()*60);const baseHue=Math.random()*60+30;
+  for(let i=0;i<count;i++){const ang=Math.random()*Math.PI*2,spd=2+Math.random()*6;fwParticles.push({x:cx,y:cy,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:1,decay:.008+Math.random()*.012,size:1.2+Math.random()*2.4,hue:baseHue+(Math.random()*20-10),sat:70+Math.random()*30,light:60+Math.random()*30,trail:[]})}
+  fwParticles.push({x:cx,y:cy,vx:0,vy:0,life:1,decay:.04,size:60,hue:baseHue,sat:80,light:90,isFlash:true});
+}
+function startFireworks(continuous){
+  fwRunning=true;
+  for(let i=0;i<3;i++)setTimeout(()=>launchFirework(fwW*(0.2+Math.random()*0.6),fwH*(0.15+Math.random()*0.4)),i*180);
+  if(continuous){const loop=()=>{if(!fwRunning)return;launchFirework(fwW*(0.15+Math.random()*0.7),fwH*(0.1+Math.random()*0.5));setTimeout(loop,300+Math.random()*500)};setTimeout(loop,400)}
+  if(!meteorTimer)startMeteors();
+}
+function stopFireworks(){fwRunning=false;if(meteorTimer){clearInterval(meteorTimer);meteorTimer=null}}
+function startMeteors(){meteorTimer=setInterval(()=>{if(!fwRunning)return;meteors.push({x:Math.random()*fwW*0.8+fwW*0.1,y:-20,vx:-3-Math.random()*2,vy:2+Math.random()*2,life:1,decay:.004,len:120+Math.random()*100})},1600)}
+function fwAnimate(){
+  fwCtx.clearRect(0,0,fwW,fwH);
+  for(let i=fwParticles.length-1;i>=0;i--){const p=fwParticles[i];
+    if(p.isFlash){p.life-=p.decay;const g=fwCtx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*(1-p.life+0.3));g.addColorStop(0,`hsla(${p.hue},${p.sat}%,${p.light}%,${p.life*0.9})`);g.addColorStop(1,`hsla(${p.hue},${p.sat}%,${p.light}%,0)`);fwCtx.fillStyle=g;fwCtx.beginPath();fwCtx.arc(p.x,p.y,p.size*(1-p.life+0.3),0,Math.PI*2);fwCtx.fill();if(p.life<=0)fwParticles.splice(i,1);continue}
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.045;p.vx*=0.985;p.vy*=0.985;p.life-=p.decay;
+    p.trail.push({x:p.x,y:p.y});if(p.trail.length>7)p.trail.shift();
+    if(p.life<=0||p.y>fwH+40){fwParticles.splice(i,1);continue}
+    for(let t=0;t<p.trail.length;t++){const tp=p.trail[t];const a2=(t/p.trail.length)*p.life*0.5;fwCtx.fillStyle=`hsla(${p.hue},${p.sat}%,${p.light}%,${a2})`;fwCtx.beginPath();fwCtx.arc(tp.x,tp.y,p.size*0.7,0,Math.PI*2);fwCtx.fill()}
+    fwCtx.fillStyle=`hsla(${p.hue},${p.sat}%,${p.light}%,${p.life})`;fwCtx.shadowColor=`hsla(${p.hue},${p.sat}%,${p.light}%,${p.life})`;fwCtx.shadowBlur=14;
+    fwCtx.beginPath();fwCtx.arc(p.x,p.y,p.size,0,Math.PI*2);fwCtx.fill();fwCtx.shadowBlur=0}
+  for(let i=meteors.length-1;i>=0;i--){const m=meteors[i];m.x+=m.vx;m.y+=m.vy;m.life-=m.decay;if(m.life<=0||m.y>fwH+100){meteors.splice(i,1);continue}
+    const grad=fwCtx.createLinearGradient(m.x,m.y,m.x-m.vx*m.len/4,m.y-m.vy*m.len/4);
+    grad.addColorStop(0,`rgba(255,245,210,${m.life*0.95})`);grad.addColorStop(0.3,`rgba(212,175,55,${m.life*0.6})`);grad.addColorStop(1,'rgba(212,175,55,0)');
+    fwCtx.strokeStyle=grad;fwCtx.lineWidth=2;fwCtx.lineCap='round';
+    fwCtx.beginPath();fwCtx.moveTo(m.x,m.y);fwCtx.lineTo(m.x-m.vx*m.len/4,m.y-m.vy*m.len/4);fwCtx.stroke();
+    fwCtx.fillStyle=`rgba(255,255,240,${m.life})`;fwCtx.shadowColor='rgba(255,245,210,0.9)';fwCtx.shadowBlur=20;
+    fwCtx.beginPath();fwCtx.arc(m.x,m.y,2.2,0,Math.PI*2);fwCtx.fill();fwCtx.shadowBlur=0}
+  requestAnimationFrame(fwAnimate);
+}
+fwAnimate();
+
+document.getElementById('fwBtn').addEventListener('click',()=>{
+  startFireworks(false);
+  for(let i=0;i<3;i++)setTimeout(()=>launchFirework(fwW*(0.2+Math.random()*0.6),fwH*(0.15+Math.random()*0.45)),i*220);
+});
+
+})();
+</script>
+</body>
+</html>
